@@ -3,3 +3,10 @@ pydantic
 uvicorn
 scikit-learn
 sentence-transformers
+
+better_profanity
+profanity_check
+unidecode
+
+openai
+dotenv
