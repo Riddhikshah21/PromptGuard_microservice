@@ -67,7 +67,7 @@ API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 🐳 Using Docker
+##  Using Docker
 
 ### 1. Build the Docker image
 
