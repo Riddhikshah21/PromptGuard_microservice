@@ -52,11 +52,11 @@ Using Docker
 docker build -t prompt-similarity-service .
 
 2. Run the container:
- docker run -it -p 8000:8000 \                  
+docker run -it -p 8000:8000 \
   -e OPENAI_API_KEY="your_api_key" \
-  -e OPENAI_MODEL = "gpt-3.5-turbo" \
-  -e MAX_QUERY_LENGTH=512 \
-  prompt-similarity-service  
+  -e OPENAI_MODEL="gpt-3.5-turbo" \
+  -e MAX_QUERY_LENGTH="512" \
+  prompt-similarity-service
 
 # Text Similarity Methods
 
