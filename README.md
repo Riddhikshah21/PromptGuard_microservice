@@ -1,18 +1,17 @@
 # PromptGuard_microservice
 A scalable microservice that evaluates text similarity between prompts and conditionally forwards one to an LLM, with comprehensive input/output sanitization and testing.
 
-*Features*
+# Features
 
-LLM Integration: Forwards prompts to LLM API if similarity threshold is met
-Input Sanitization: Ensures responses are safe by detecting refusal patterns, stripping potentially harmful content, limiting query length, filtering out disallowed words/phrases, or rejecting the entire prompts
-Text Similarity Analysis: Multiple similarity algorithms:
+1. Input Sanitization: Ensures responses are safe by detecting refusal patterns, stripping potentially harmful content, limiting query  length, filtering out disallowed words/phrases, or rejecting the entire prompts
+2. Text Similarity Analysis: Multiple similarity algorithms:
 - Cosine similarity using sentence embeddings
 - Jaccard similarity using token comparison
-LLM Integration: Forwards prompts to LLM API if similarity threshold is met
-Output Sanitization: Ensures responses are safe by detecting refusal patterns, data leaks, and inappropriate content
-REST API: Clean, well-documented API built with FastAPI
-Comprehensive Testing: Unit, integration, and load tests included
-Containerization: Ready for deployment with Docker
+3. LLM Integration: Forwards prompts to LLM API if similarity threshold is met
+4. Output Sanitization: Ensures responses are safe by detecting refusal patterns, data leaks, and inappropriate content
+5. REST API: Clean, well-documented API built with FastAPI
+6. Comprehensive Testing: Unit, integration, and load tests included
+7. Containerization: Ready for deployment with Docker
 
 *Quick Start*
 Prerequisites
@@ -35,10 +34,9 @@ pip install -r requirements.txt
 
 4. Set environment variables:
 
-# LLM API configuration 
 OPENAI_API_KEY=your_api_key_here
-export LLM_API_URL=https://api.openai.com/v1/chat/completions
-export LLM_MODEL=gpt-3.5-turbo
+OPENAI_MODEL = "gpt-3.5-turbo"
+MAX_QUERY_LENGTH=512
 
 *Running the Service*
 Start the service: 
@@ -54,38 +52,13 @@ Using Docker
 docker build -t prompt-similarity-service .
 
 2. Run the container:
+ docker run -it -p 8000:8000 \                  
+  -e OPENAI_API_KEY="your_api_key" \
+  -e OPENAI_MODEL = "gpt-3.5-turbo" \
+  -e MAX_QUERY_LENGTH=512 \
+  prompt-similarity-service  
 
-docker run -p 8000:8000 -e OPENAI_API_KEY=your_api_key_here prompt-similarity-service
-
-*API Documentation*
-POST /check_prompt_similarity
-Compare two prompts, calculate their similarity, and optionally generate an LLM response if they are similar enough.
-
-Request Body:
-json{
-  "prompt1": "What is the weather like in Paris today?",
-  "prompt2": "How's the weather in Paris right now?",
-  "similarity_method": "cosine"
-}
-
-Response:
-json{
-  "status_code": 0,
-  "llm_response": "string",
-  "similarity_score": 0,
-  "is_similar": false,
-  "sanitized_prompt1": "string",
-  "sanitized_prompt2": "string"
-}
-
-GET /
-Check the root of the service.
-Response:
-json{
-  "status":"ok"
-}
-
-*Text Similarity Methods*
+# Text Similarity Methods
 
 1. Cosine Similarity (Default)
 - Computes the cosine similarity between two input text prompts using TF-IDF (Term Frequency–Inverse Document Frequency) vectorization. 
@@ -97,15 +70,18 @@ json{
 - Better for keyword/token matching
 - Less computationally intensive
 
-*Testing*
+# Testing
 
 Running Tests
 
 1. Run unit and integration tests:
-pytest
+pytest tests/
 
 2. Run with coverage report:
-pytest --cov=app
+coverage erase
+coverage run -m pytest
+coverage html
+open htmlcov/index.html
 
 3. Load Testing
 The service includes a Locust load testing script to simulate high traffic:
@@ -113,21 +89,18 @@ locust -f tests/load_test.py --host=http://localhost:8000
 Navigate to http://localhost:8089 to configure and run the load test.
 
 
-*Scaling Considerations*
+# Scaling Considerations
+
 Horizontal Scaling
 The service is designed to be stateless, allowing for easy horizontal scaling:
-
-Deploy multiple instances behind a load balancer
-Use container orchestration like Kubernetes for auto-scaling
+- Deploy multiple instances behind a load balancer
+- Use container orchestration like Kubernetes for auto-scaling
 
 Performance Optimizations
-
-Embedding model caching for frequently used prompts
-Response caching for common queries
-Batched processing for high volume requests
+- Embedding model caching for frequently used prompts
+- Response caching for common queries
+- Batched processing for high volume requests
 
 High Availability
-
-Deploy across multiple availability zones
-Implement health checks and automatic recovery
-Use circuit breakers for LLM API failures
+- Deploy across multiple availability zones
+- Implement health checks and automatic recovery

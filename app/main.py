@@ -13,7 +13,8 @@ SIMILARITY_THRESHOLD = 0.1
 class PromptRequest(BaseModel):
     prompt1: str
     prompt2: str
-    similarity_method: str = "cosine"  # Default to "cosine"
+    # Default set to "cosine"
+    similarity_method: str = "cosine" 
 
 # Response body
 class PromptResponse(BaseModel):
@@ -42,13 +43,13 @@ def check_prompt_similarity(payload: PromptRequest):
                 content={"status": "rejected", "message": "Content violates safety policies."}
             )
 
+        # Accepted prompts after sanitization
         sanitized_prompt1 = sanitized_prompt1.get("sanitized_prompt")
         sanitized_prompt2 = sanitized_prompt2.get("sanitized_prompt")
 
-        # Access similarity_method directly
         similarity_method = payload.similarity_method  
 
-        # Calculate similarity based on the method
+        # Calculate similarity based on the similarity_method in payload
         if similarity_method == "cosine":
             similarity_score = cosine_similarity_tfidf(sanitized_prompt1, sanitized_prompt2)
         elif similarity_method == "jaccard":
@@ -56,13 +57,13 @@ def check_prompt_similarity(payload: PromptRequest):
         else:
             raise HTTPException(status_code=400, detail="Invalid similarity method")
 
+        # Compare similarity score and threshold defined
         if similarity_score >= SIMILARITY_THRESHOLD:
 
             llm_response = get_local_llm_response(sanitized_prompt1)
-
             response  = sanitize_output_response(llm_response)
             sanitized_response = response['sanitized_output']
-
+            # Return santized output LLM response
             return PromptResponse(
                 status_code=200,
                 llm_response=sanitized_response,

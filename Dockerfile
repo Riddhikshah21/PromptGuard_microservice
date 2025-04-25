@@ -1,4 +1,4 @@
-# Use a lightweight Python base image
+# Load python
 FROM python:3.11
 
 # Set working directory
@@ -19,5 +19,5 @@ ENV PORT=8000
 # Expose the port the app runs on (adjust if necessary)
 EXPOSE ${PORT}
 
-# Set the command to run the application (replace with your actual command)
+# Set the command to run the application 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

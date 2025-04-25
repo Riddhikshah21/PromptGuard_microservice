@@ -1,23 +1,17 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-# from sentence_transformers import SentenceTransformer, util
 import string
 
 def cosine_similarity_tfidf(prompt1, prompt2):
+    """Cosine Similarity (Default) - Computes the cosine similarity between two input text prompts using TF-IDF (Term Frequency - Inverse Document Frequency) vectorization."""
     vectorizer = TfidfVectorizer().fit([prompt1, prompt2])
     vectors = vectorizer.transform([prompt1, prompt2])
     similarity = cosine_similarity(vectors[0], vectors[1])
     return similarity[0][0]
 
 
-# def sentence_transformer_similarity(prompt1, prompt2):
-#     model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-#     embeddings = model.encode([prompt1, prompt2])
-#     similarity = util.cos_sim(embeddings, embeddings)
-#     return similarity.item()
-
-
 def jaccard_similarity(prompt1, prompt2):
+    """Jaccard Similarity - Based on the intersection over union of tokens. Simpler calculation based on word overlap."""
     translator = str.maketrans('', '', string.punctuation)
     set1 = set(prompt1.lower().translate(translator).split())
     set2 = set(prompt2.lower().translate(translator).split())

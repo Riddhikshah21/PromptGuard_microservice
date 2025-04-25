@@ -3,6 +3,7 @@ from typing import Dict
 from collections import defaultdict
 from better_profanity import profanity
 from unidecode import unidecode
+import os
 
 profanity.load_censor_words()
 
@@ -23,7 +24,7 @@ INJECTION_PATTERNS = [
 ]
 
 # Max query length
-MAX_QUERY_LENGTH = 512
+MAX_QUERY_LENGTH = os.getenv("MAX_QUERY_LENGTH")
 
 # Content moderator to check and calculate profanity score and input risk
 class ContentModerator:
@@ -71,13 +72,13 @@ class ContentModerator:
         }
 
 def sanitize_input_prompt(prompt: str) -> Dict:
-    """Process and sanitize input"""
+    """Process and sanitize input prompt"""
     moderator = ContentModerator()
     
     # Initial sanitization
     sanitized_prompt = unidecode(prompt)
     sanitized_prompt = re.sub(r"[^\w\s.,!?'\"]", '', sanitized_prompt)
-    sanitized_prompt = re.sub(r"\s+", ' ', sanitized_prompt).strip()[:MAX_QUERY_LENGTH]
+    sanitized_prompt = re.sub(r"\s+", ' ', sanitized_prompt).strip()[:int(MAX_QUERY_LENGTH)]
 
     # Injection pattern removal
     for pattern in INJECTION_PATTERNS:
@@ -107,7 +108,7 @@ def sanitize_input_prompt(prompt: str) -> Dict:
             "message": "Content violates safety policies"
         }
     
-    # Final content sanitization
+    # Content sanitization
     if any(phrase in sanitized_prompt.lower() for phrase in DISALLOWED_PHRASES):
         sanitized_prompt = re.sub(
             r"\b(" + "|".join(re.escape(phrase) for phrase in DISALLOWED_PHRASES) + r")\b",
@@ -132,7 +133,7 @@ def sanitize_output_response(response: str) -> Dict:
     sanitized_output = unidecode(response)
     sanitized_output = re.sub(r"[^\w\s.,!?'\"\n-]", '', sanitized_output)
 
-    # Risk analysis
+    # Calculae risk 
     risk_result = moderator.calculate_risk(sanitized_output)
     
     # High-risk rejection

@@ -23,7 +23,22 @@ def test_check_similarity_endpoint():
     assert "is_similar" in data
     assert "sanitized_prompt1" in data
     assert "sanitized_prompt2" in data
- 
+
+def test_check_similarity_endpoint():
+    # Test with similar prompts
+    payload = {
+        "prompt1": "Tell me about machine learning",
+        "prompt2": "Explain machine learning to me",
+        "similarity_method": "jaccard"
+    }
+    response = client.post("/check_prompt_similarity", json = payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "similarity_score" in data
+    assert "is_similar" in data
+    assert "sanitized_prompt1" in data
+    assert "sanitized_prompt2" in data
+  
 def test_check_similarity_invalid_method():
     # Test with invalid similarity method
     payload = {
@@ -48,6 +63,23 @@ def test_process_endpoint_similar():
     data = response.json()
     assert "similarity_score" in data
     assert "is_similar" in data
+    assert "sanitized_prompt1" in data
+    assert "sanitized_prompt2" in data
+
+def test_process_endpoint_similar():
+    # Test with similar prompts
+    payload = {
+        "prompt1": "Tell me about machine learning",
+        "prompt2": "Explain machine learning to me",
+        "similarity_method": "jaccard"
+    }
+    response = client.post("/check_prompt_similarity", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "similarity_score" in data
+    assert "is_similar" in data
+    assert "sanitized_prompt1" in data
+    assert "sanitized_prompt2" in data
  
 def test_process_endpoint_different():
     # Test with different prompts
@@ -61,6 +93,26 @@ def test_process_endpoint_different():
     data = response.json()
     assert "similarity_score" in data
     assert "is_similar" in data
+    assert "sanitized_prompt1" in data
+    assert "sanitized_prompt2" in data
+    # Check if response indicates prompts are not similar
+    if not data["is_similar"]:
+        assert "not similar enough" in data["llm_response"].lower()
+
+def test_process_endpoint_different():
+    # Test with different prompts
+    payload = {
+        "prompt1": "Tell me about machine learning",
+        "prompt2": "What's the weather like today?",
+        "similarity_method": "jaccard"
+    }
+    response = client.post("/check_prompt_similarity", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "similarity_score" in data
+    assert "is_similar" in data
+    assert "sanitized_prompt1" in data
+    assert "sanitized_prompt2" in data
     # Check if response indicates prompts are not similar
     if not data["is_similar"]:
         assert "not similar enough" in data["llm_response"].lower()
@@ -74,3 +126,4 @@ def test_input_validation():
     }
     response = client.post("/check_prompt_similarity", json=payload)
     assert response.status_code == 422 # Unprocessable Entity
+
