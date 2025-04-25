@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from main import app
+from app.main import app
 
 client = TestClient(app)
 
@@ -48,8 +48,6 @@ def test_process_endpoint_similar():
     data = response.json()
     assert "similarity_score" in data
     assert "is_similar" in data
-    # assert "sanitized_prompt" in data['sanitized_prompt1']
-    # assert "llm_response" in data
  
 def test_process_endpoint_different():
     # Test with different prompts
@@ -63,8 +61,6 @@ def test_process_endpoint_different():
     data = response.json()
     assert "similarity_score" in data
     assert "is_similar" in data
-    # assert "sanitized_prompt" in data
-    # assert "llm_response" in data
     # Check if response indicates prompts are not similar
     if not data["is_similar"]:
         assert "not similar enough" in data["llm_response"].lower()

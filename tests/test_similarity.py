@@ -4,7 +4,7 @@ import numpy as np
 import torch
 
 # Import the functions to test
-from apps.similarity import cosine_similarity_tfidf, jaccard_similarity
+from app.similarity import cosine_similarity_tfidf, jaccard_similarity
 # ,sentence_transformer_similarity
 
 

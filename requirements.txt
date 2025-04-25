@@ -1,4 +1,5 @@
 fastapi
+requests
 pydantic
 uvicorn
 scikit-learn
@@ -9,7 +10,7 @@ profanity_check
 unidecode
 
 openai
-dotenv
+python-dotenv
 
 pytest
 locust
