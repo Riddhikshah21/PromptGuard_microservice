@@ -1,5 +1,4 @@
 import openai
-from sanitize import sanitize_output_response
 import os
 from dotenv import load_dotenv
 
