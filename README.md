@@ -36,7 +36,7 @@ pip install -r requirements.txt
 
 OPENAI_API_KEY=your_api_key_here \
 OPENAI_MODEL = "gpt-3.5-turbo" \
-MAX_QUERY_LENGTH=512 \
+MAX_QUERY_LENGTH=512 
 
 *Running the Service*
 Start the service: 
