@@ -77,6 +77,8 @@ docker build -t prompt-similarity-service .
 
 ### 2. Run the container
 
+If you do not have a openai api key, use the below command as it is else replace 'your_api_key' with your openai api key.
+
 ```bash
 docker run -it -p 8000:8000 \
   -e OPENAI_API_KEY="your_api_key" \

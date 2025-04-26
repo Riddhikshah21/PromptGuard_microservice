@@ -28,7 +28,6 @@ def get_llm_response(prompt: str) -> str:
     except Exception as e: 
         raise RuntimeError(f"LLM request failed: {str(e)}")
 
-
 def get_local_llm_response(prompt: str) -> str:
     # Get local llm model response
     response = generator(prompt, max_new_tokens=100, do_sample=True, temperature=0.7)

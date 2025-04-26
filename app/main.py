@@ -4,17 +4,19 @@ from app.similarity import cosine_similarity_tfidf, jaccard_similarity
 from app.sanitize import sanitize_input_prompt, sanitize_output_response
 from app.llm import get_llm_response, get_local_llm_response
 from fastapi.responses import JSONResponse
+from typing import Literal
 
 app = FastAPI(title="PromptGuard", version="1.0")
 
-SIMILARITY_THRESHOLD = 0.1
+SIMILARITY_THRESHOLD = 0.4
 
 # Request body
 class PromptRequest(BaseModel):
     prompt1: str
     prompt2: str
-    # Default set to "cosine"
-    similarity_method: str = "cosine" 
+    # Restrict llm_model and similarity method to specific options. Default set to "cosine"
+    similarity_method: Literal["cosine", "jaccard"] = "cosine"
+    llm_model: Literal["openai", "local_llm"] = "local_llm"
 
 # Response body
 class PromptResponse(BaseModel):
@@ -59,8 +61,10 @@ def check_prompt_similarity(payload: PromptRequest):
 
         # Compare similarity score and threshold defined
         if similarity_score >= SIMILARITY_THRESHOLD:
-
-            llm_response = get_local_llm_response(sanitized_prompt1)
+            if payload.llm_model == 'openai':
+                llm_response = get_llm_response(sanitized_prompt1)
+            elif payload.llm_model == 'local_llm':
+                llm_response = get_local_llm_response(sanitized_prompt1)
             response  = sanitize_output_response(llm_response)
             sanitized_response = response['sanitized_output']
             # Return santized output LLM response
