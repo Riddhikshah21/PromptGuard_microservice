@@ -66,3 +66,24 @@ def test_get_llm_response_generic_exception(mock_openai):
         get_llm_response("Trigger unexpected error")
 
     assert "LLM request failed: Unexpected failure" in str(exc_info.value)
+
+
+@patch('app.llm.generator')
+def test_missing_response_from_local_llm(mock_generator):
+    # Test for Local llm missing response
+    mock_generator.side_effect = Exception("Model response is missing")
+    with pytest.raises(Exception) as exc_info:
+        get_local_llm_response("Tell me a joke")
+    assert "response is missing" in str(exc_info)
+
+
+@patch('openai.OpenAI')
+def test_empty_resposne_from_openai(mock_openai):
+    mock_client = MagicMock()
+    mock_response = MagicMock()
+    mock_response.choices = []
+    mock_client.chat.completions.create.return_value = mock_response
+    mock_openai.return_value = mock_client
+    with pytest.raises(Exception) as exc_info:
+        get_llm_response("Tell me a joke")
+    assert "LLM request failed" in str(exc_info.value)

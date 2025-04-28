@@ -32,7 +32,7 @@ class TestContentModerator:
         with patch('app.sanitize.DISALLOWED_PHRASES', ['bomb']):
             result = self.mod.calculate_risk("use a bomb")
             assert result['category_risks']['disallowed_phrase'] > 0
-
+    
 
 class TestHelpers:
     def test_disallowed_phrase_detection(self):

@@ -57,7 +57,7 @@ def check_prompt_similarity(payload: PromptRequest):
         elif similarity_method == "jaccard":
             similarity_score = jaccard_similarity(sanitized_prompt1, sanitized_prompt2)
         else:
-            raise HTTPException(status_code=400, detail="Invalid similarity method")
+            raise HTTPException(status_code=422, detail="Invalid similarity method")
 
         # Compare similarity score and threshold defined
         if similarity_score >= SIMILARITY_THRESHOLD:
